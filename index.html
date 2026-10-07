@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HazeLab Studio – Real-Time Air Quality Intelligence</title>
+  <meta name="description" content="A premium, production-ready single-page site exploring real-time air quality trends, with editorial insights and actionable data visualizations." />
+  <style>
+    :root{
+      --bg: #0e1116;
+      --surface: #141923;
+      --surface-2:#1b2030;
+      --text: #e6e9f3;
+      --muted:#a7b3cc;
+      --brand: #7bd389;
+      --brand-2: #4aa3ff;
+      --accent: #ffd166;
+      --grid: rgba(255,255,255,.05);
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 14px;
+    }
+    html,body{margin:0;padding:0;height:100%}
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial;
+      background: radial-gradient(circle at 20% -10%, rgba(123,211,137,.15), transparent 40%),
+                  radial-gradient(circle at 90% 0%, rgba(0,0,0,.25), transparent 40%),
+                  linear-gradient(180deg, #0c0f14 0%, #0a0e13 100%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    header[role="banner"]{
+      position: sticky; top:0; z-index: 1000;
+      backdrop-filter: saturate(1.2) blur(6px);
+      background: rgba(10,12,18,.8);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .container{ width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+    nav[aria-label="Main"]{
+      display:flex; align-items:center; justify-content:space-between; padding:14px 0;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.4px;}
+    .brand svg{ width:28px; height:28px; }
+    .nav-links{ display:flex; gap:14px; align-items:center; list-style:none; padding:0; margin:0; }
+    .nav-links a{ padding:10px 14px; border-radius:999px; color:var(--text); border:1px solid transparent; }
+    .nav-links a[aria-current="page"]{ background: rgba(123,211,137,.15); border-color: rgba(123,211,137,.5); }
+    .cta{ padding:11px 16px; border-radius:999px; border:1px solid rgba(123,211,137,.5); background: linear-gradient(135deg, rgba(123,211,137,.25), rgba(75,125,255,.25)); color:#eafff3; font-weight:600; }
+
+    .hero{
+      display:grid; grid-template-columns: 1.1fr 0.9fr; gap:40px; align-items:center;
+      padding:48px 0 20px;
+    }
+    .hero h1{ font-size:clamp(28px, 4vw, 48px); margin:0 0 12px; line-height:1.05; letter-spacing:.2px; }
+    .hero p{ color:var(--muted); font-size: clamp(14px,1.5vw,18px); margin:0 0 20px; }
+    .kpis{ display:flex; gap:16px; flex-wrap:wrap; margin-top:8px; }
+    .kpi{ background: rgba(255,255,255,.04); padding:12px 14px; border-radius:12px; min-width:120px; }
+    .visual{ position:relative; height:320px; border-radius:var(--radius); overflow:hidden; background: linear-gradient(135deg, rgba(123,211,137,.25), rgba(74,163,255,.25)); border:1px solid rgba(255,255,255,.08); box-shadow: var(--shadow); }
+    /* decorative texture */
+    .visual:after{
+      content:""; position:absolute; inset:0; background-image: radial-gradient(circle at 20px 20px, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 40px 40px; mix-blend-mode: overlay; opacity:.6;
+    }
+    .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; padding:14px; }
+    .card{ background: rgba(15,18,28,.9); border:1px solid rgba(255,255,255,.08); border-radius: 12px; padding:14px; min-height:90px; display:flex; flex-direction:column; justify-content:space-between; }
+
+    main{ padding: 28px 0 60px; }
+    section{ padding: 40px 0; }
+    h2{ font-size:22px; margin:0 0 12px; }
+    .lead{ color:var(--muted); }
+
+    /* content blocks */
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .block{ padding:14px 16px; border-radius:12px; background: rgba(13,18,28,.6); border:1px solid rgba(255,255,255,.08); }
+    .block h3{ margin:0 0 6px; font-size:16px; }
+    .block p{ margin:0; color:var(--muted); font-size:14px; }
+
+    /* data visualization minimal */
+    .chart{ height:120px; position:relative; border-radius:8px; overflow:hidden; background: linear-gradient(#0e1220, #0a0f1a); border:1px solid rgba(255,255,255,.08); }
+    .bar{ position:absolute; bottom:0; width:8px; background: linear-gradient(#7bd389, #4aa3ff); border-radius:4px 4px 0 0; }
+    .bar:hover{ outline:2px solid rgba(123,211,137,.6); }
+
+    footer{ border-top:1px solid rgba(255,255,255,.08); padding:28px 0; color:var(--muted); }
+    .footer-inner{ display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; }
+
+    @media (max-width: 900px){
+      .hero{ grid-template-columns: 1fr; padding: 28px 0 0; }
+      .visual{ height: 240px; }
+      .grid{ grid-template-columns: 1fr; }
+      .grid-2{ grid-template-columns: 1fr; }
+      .nav-links{ display:none; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition: none !important; }
+    }
+  </style>
+  <!-- Google tag (gtag.js) -->
+  <script async src='https://www.googletagmanager.com/gtag/js?id=G-H4VF7WNZRR'></script><script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-H4VF7WNZRR');</script>
+</head>
+<body>
+  <header role="banner" aria-label="Site header">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between;">
+      <div class="brand" aria-label="HazeLab Brand">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#4aa3ff"/><stop offset="1" stop-color="#7bd389"/></linearGradient></defs><path fill="url(#g)" d="M12 2a7 7 0 0 0-7 7v5a7 7 0 0 0 14 0V9a7 7 0 0 0-7-7Z"/><circle cx="9" cy="8" r="1.5" fill="#fff"/><circle cx="15" cy="8" r="1.5" fill="#fff"/></svg>
+        <span>HazeLab Studio</span>
+      </div>
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><a href="#overview" aria-current="page">Overview</a></li>
+          <li><a href="#trend-data">Trend Data</a></li>
+          <li><a href="#editorial">Editorial</a></li>
+          <li><a href="#cta" class="cta" aria-label="Get early access">Get early access</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content" role="main" class="container" aria-label="Main content">
+    <section id="overview" class="hero" aria-label="Hero section">
+      <div>
+        <h1>Real-time air quality intelligence that feels crafted, not generic</h1>
+        <p class="lead">A premium platform exploring haze, air quality and urban health trends with editorial rigor, interactive visuals, and production-ready front-end engineering.</p>
+        <div class="kpis" aria-label="Key metrics">
+          <div class="kpi" role="group" aria-label="World air quality index">Global AQI index • 72.4</div>
+          <div class="kpi" role="group" aria-label="Haze trend growth">Haze trend growth: +320%</div>
+          <div class="kpi" role="group" aria-label="Editorial coverage">Editorial coverage: 48 stories this week</div>
+        </div>
+        <div style="margin-top:14px;">
+          <a href="#cta" class="cta" aria-label="Join the waitlist for early access">Join the waitlist</a>
+        </div>
+      </div>
+      <div class="visual" aria-label="Data visualization preview">
+        <!-- lightweight ambient visualization -->
+        <svg width="100%" height="100%" viewBox="0 0 600 320" preserveAspectRatio="none" role="img" aria-label="Ambient air quality trend preview" style="display:block;">
+          <defs>
+            <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#7bd389" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#4aa3ff" stop-opacity="0.9"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="600" height="320" fill="none"/>
+          <!-- decorative waveform bars -->
+          <g fill="url(#grad)" opacity="0.9">
+            <rect x="20" y="260" width="20" height="60" rx="4"/>
+            <rect x="50" y="230" width="20" height="90" rx="4"/>
+            <rect x="80" y="210" width="20" height="110" rx="4"/>
+            <rect x="110" y="250" width="20" height="70" rx="4"/>
+            <rect x="140" y="190" width="20" height="130" rx="4"/>
+            <rect x="170" y="210" width="20" height="110" rx="4"/>
+            <rect x="200" y="240" width="20" height="80" rx="4"/>
+            <rect x="230" y="200" width="20" height="120" rx="4"/>
+            <rect x="260" y="180" width="20" height="140" rx="4"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section id="trend-data" aria-label="Trend data section">
+      <h2>Trend data: haze, air quality and urban health signals</h2>
+      <p class="lead" style="margin-bottom:12px;">A production-ready, trend-first view for city planners, researchers, and policy teams. The data is distilled into accessible visuals and credible summaries.</p>
+
+      <div class="grid">
+        <div class="card" aria-labelledby="card1-title">
+          <div id="card1-title" style="font-weight:700;">Annual Global AQI Movement</div>
+          <div class="chart" role="img" aria-label="Annual global AQI chart">
+            <!-- simple bars -->
+            <div class="bar" style="left:20px;height:70px; width:10px;"></div>
+            <div class="bar" style="left:40px;height:120px; width:10px;"></div>
+            <div class="bar" style="left:60px;height:90px; width:10px;"></div>
+            <div class="bar" style="left:80px;height:140px; width:10px;"></div>
+            <div class="bar" style="left:100px;height:60px; width:10px;"></div>
+          </div>
+          <p style="margin:6px 0 0; color:var(--muted); font-size:12px;">Base data from city sensors, anonymized for privacy. Updated every hour.</p>
+        </div>
+
+        <div class="card" aria-labelledby="card2-title">
+          <div id="card2-title" style="font-weight:700;">Haze Incidents by Region</div>
+          <div class="chart" role="img" aria-label="Regional haze incidents chart" style="height:110px;">
+            <div class="bar" style="left:16px;height:90px;width:8px;"></div>
+            <div class="bar" style="left:40px;height:60px;width:8px;"></div>
+            <div class="bar" style="left:64px;height:110px;width:8px;"></div>
+            <div class="bar" style="left:88px;height:40px;width:8px;"></div>
+            <div class="bar" style="left:112px;height:80px;width:8px;"></div>
+          </div>
+          <p style="margin:6px 0 0; color:var(--muted); font-size:12px;">Regional spikes tied to agricultural burning patterns and meteorology.</p>
+        </div>
+
+        <div class="card" aria-labelledby="card3-title">
+          <div id="card3-title" style="font-weight:700;">Urban Health Signals</div>
+          <div class="chart" role="img" aria-label="Urban health signals chart" style="height:110px;">
+            <div class="bar" style="left:12px;height:70px;width:8px;"></div>
+            <div class="bar" style="left:40px;height:100px;width:8px;"></div>
+            <div class="bar" style="left:68px;height:60px;width:8px;"></div>
+            <div class="bar" style="left:96px;height:90px;width:8px;"></div>
+          </div>
+          <p style="margin:6px 0 0; color:var(--muted); font-size:12px;">Correlation with mobility, pollution exposure and respiratory health outcomes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="editorial" aria-label="Editorial content" class="grid-2">
+      <div class="block" aria-labelledby="ed1">
+        <h3 id="ed1" style="font-size:16px;">Editorial: Understanding the haze cycle</h3>
+        <p>Our editors connect sensor data with lived experience, explaining how weather, policy and daily choices shape air quality in megacities and towns alike.</p>
+      </div>
+      <div class="block" aria-labelledby="ed2">
+        <h3 id="ed2" style="font-size:16px;">Policy spotlight: thresholds and health advisories</h3>
+        <p>We translate regulatory metrics into practical guidance for schools, workplaces and families to minimize exposure during elevated pollution periods.</p>
+      </div>
+    </section>
+
+    <section id="cta" aria-label="Call to action" style="padding-top:0;">
+      <div class="block" style="text-align:center;">
+        <h2 style="margin:0 0 8px;">Join the waitlist for early access to the studio-grade dashboard</h2>
+        <p style="margin:0 0 16px; color:var(--muted);">Be the first to experience production-ready visualizations, location-aware insights, and editorial context designed for researchers and decision-makers.</p>
+        <form onsubmit="handleSubscribe(event)" aria-label="Join waitlist" style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+          <label class="sr-only" for="email" style="position:absolute; left:-9999px;">Email</label>
+          <input id="email" type="email" required placeholder="you@organization.com" aria-label="Email address" style="padding:12px 14px; border-radius:8px; border:1px solid rgba(255,255,255,.25); width: min(320px, 70%); background:#0b1320; color:#eaf1ff;">
+          <button type="submit" class="cta" aria-label="Submit email">Request access</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo" aria-label="Site footer" style="background:#0b0f15;">
+    <div class="container footer-inner" style="gap:28px; align-items:stretch;">
+      <div style="flex:1 1 240px;"><strong>HazeLab Studio</strong>
+        <p style="color:var(--muted); margin:6px 0 0;">Premium trend storytelling around air quality, haze and urban health.</p>
+      </div>
+      <div style="flex:1 1 240px;">
+        <div style="font-weight:600; margin-bottom:6px;">Sections</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <a href="#overview" aria-label="Overview link" style="padding:6px 10px; border-radius:999px; background:rgba(123,211,137,.15); border:1px solid rgba(123,211,137,.4);">Overview</a>
+          <a href="#trend-data" aria-label="Trend data link" style="padding:6px 10px; border-radius:999px; background:rgba(74,163,255,.15); border:1px solid rgba(74,163,255,.4);">Trend Data</a>
+          <a href="#editorial" aria-label="Editorial link" style="padding:6px 10px; border-radius:999px; background:rgba(255,209,102,.15); border:1px solid rgba(255,209,102,.4);">Editorial</a>
+        </div>
+      </div>
+      <div style="flex:1 1 240px; text-align:right;">
+        <div style="font-size:12px; color:var(--muted);">© 2026 HazeLab Studio</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // lightweight JS to enhance UX without libraries
+    function handleSubscribe(e){
+      e.preventDefault();
+      var email = document.getElementById('email').value;
+      if(!email || !/@/.test(email)){ alert('Please enter a valid email address.'); return; }
+      // pretend submission
+      alert('Thanks! We will notify ' + email + ' when access opens.');
+      document.getElementById('email').value = '';
+    }
+
+    // keyboard navigation enhancement for focus outline visibility
+    (function(){
+      const btns = document.querySelectorAll('a, button, input');
+      btns.forEach(el => el.addEventListener('focus', () => el.style.outline = '2px solid #4aa3ff'));
+      btns.forEach(el => el.addEventListener('blur', () => el.style.outline = 'none'));
+    })();
+  </script>
+</body>
+</html>
